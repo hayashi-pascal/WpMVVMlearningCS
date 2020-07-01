@@ -9,6 +9,6 @@
     <Grid>
         <Button x:Name="ButtonChA" Content="Change to A" HorizontalAlignment="Left" Margin="24,24,0,0" VerticalAlignment="Top" Width="90" RenderTransformOrigin="-0.013,-1.5" Height="33" Click="ButtonChA_Click"/>
         <Button x:Name="ButtonChB" Content="Change to B" HorizontalAlignment="Left" Margin="24,81,0,0" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.04,0.45" Height="33" Click="ButtonChB_Click"/>
-        <Label x:Name="LabelStatus" Content="Start" HorizontalAlignment="Left" Margin="144,27,0,0" VerticalAlignment="Top"/>
+        <Label Content="{Binding Status}" HorizontalAlignment="Left" Margin="144,27,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
