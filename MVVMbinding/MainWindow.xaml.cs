@@ -30,29 +30,10 @@ namespace MVVMbinding
             this.DataContext = vm;
         }
 
-        // MVVMパターンのうち、UIに配置したコントロールのプロパティをバインディングした例.
-        // UIで配置したコントロールのプロパティはViewModelクラスのプロパティに置き換えられる.
-        // UIでの操作は引き続きイベントハンドラで処理する
-
-        /// <summary>
-        /// ButtonChAクリック時の処理
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonChA_Click(object sender, RoutedEventArgs e)
-        {
-            vm.Status = "A";
-        }
-
-        /// <summary>
-        /// ButtonChBクリック時の処理
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonChB_Click(object sender, RoutedEventArgs e)
-        {
-            vm.Status = "B";
-        }
+        // MVVMパターンにより、UIに配置したコントロールのプロパティと
+        // コントロールのコマンドのバインディングを行った.
+        // この部分にあった、ボタンクリックのイベントハンドラーを取り去ったため、
+        // Viewのコードビハインドは「表示するだけ」になった。
     }
 
     /// <summary>
@@ -60,6 +41,18 @@ namespace MVVMbinding
     /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
+        // コマンドの実装：ICommandプロパティを宣言し、Xamlにバインドする
+        public ICommand ChangeA { get; set; }
+        public ICommand ChangeB { get; set; }
+
+        // ViewModelのコンストラクタ
+        public MainViewModel()
+        {
+            // コマンドのインスタンス生成
+            ChangeA = new CommandA(this);
+            ChangeB = new CommandB(this);
+        }
+
         // ラベルのメンバーとプロパティ
         private string _status = "Start";
         public string Status
@@ -87,4 +80,73 @@ namespace MVVMbinding
         #endregion
     }
 
+    /// <summary>
+    /// ButtonAの状態・動作定義
+    /// </summary>
+    public class CommandA : ICommand
+    {
+        // メンバーとコンストラクターでCommandとViewModelを関連付ける
+        readonly MainViewModel vm;
+        public CommandA(MainViewModel viewModel)
+        {
+            this.vm = viewModel;
+        }
+
+        // Commandの実行可能状態変化を検知するイベントハンドラー
+        public event EventHandler CanExecuteChanged;
+        public void RaiseCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, null);
+        }
+
+        // Commandが実行可能か判定する
+        public bool CanExecute(object parameter)
+        {
+            if (vm.Status != null)
+                return true;
+            else
+                return false;
+        }
+
+        // Command動作本体
+        public void Execute(object parameter)
+        {
+            vm.Status = "A";
+        }
+    }
+
+    /// <summary>
+    /// ButtonBの状態・動作定義
+    /// </summary>
+    public class CommandB : ICommand
+    {
+        // メンバーとコンストラクターでCommandとViewModelを関連付ける
+        private readonly MainViewModel vm;
+        public CommandB(MainViewModel viewModel)
+        {
+            this.vm = viewModel;
+        }
+
+        // Commandの実行可能状態変化を検知するイベントハンドラー
+        public event EventHandler CanExecuteChanged;
+        public void RaiseCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, null);
+        }
+
+        // Commandが実行可能か判定する
+        public bool CanExecute(object parameter)
+        {
+            if (vm.Status != null)
+                return true;
+            else
+                return false;
+        }
+
+        // Command動作本体
+        public void Execute(object parameter)
+        {
+            vm.Status = "B";
+        }
+    }
 }
