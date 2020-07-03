@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -57,25 +58,17 @@ namespace MVVMbinding
         private string _status = "Start";
         public string Status
         {
-            get { return this._status; }
-            set
-            {
-                if (value != this._status)
-                {
-                    this._status = value;
-                    this.RaisePropertyChanged(nameof(Status));
-                    return;
-                }
-            }
+            get { return _status; }
+            set { SetProperty(ref _status, value); }
         }
 
         // InotifyPropertyChangedメンバー
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void RaisePropertyChanged(string name)
+        private void SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {
-            if (PropertyChanged != null)
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            field = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
     }
